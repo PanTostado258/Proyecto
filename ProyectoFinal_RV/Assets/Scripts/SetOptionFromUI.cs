@@ -18,6 +18,17 @@ public class SetOptionFromUI : MonoBehaviour
 
         if (PlayerPrefs.HasKey("turn"))
             turnDropdown.SetValueWithoutNotify(PlayerPrefs.GetInt("turn"));
+        
+        // Buscar automáticamente si no está asignado
+        if (turnTypeFromPlayerPref == null)
+        {
+            turnTypeFromPlayerPref = FindObjectOfType<SetTurnTypeFromPlayerPref>();
+            
+            if (turnTypeFromPlayerPref == null)
+            {
+                Debug.LogError("No se encontró SetTurnTypeFromPlayerPref en la escena!");
+            }
+        }
     }
 
     public void SetGlobalVolume(float value)
@@ -27,7 +38,16 @@ public class SetOptionFromUI : MonoBehaviour
 
     public void SetTurnPlayerPref(int value)
     {
-        PlayerPrefs.SetInt("turn", value); 
-        turnTypeFromPlayerPref.ApplyPlayerPref();
+        PlayerPrefs.SetInt("turn", value);
+        
+        // Verificar antes de usar
+        if (turnTypeFromPlayerPref != null)
+        {
+            turnTypeFromPlayerPref.ApplyPlayerPref();
+        }
+        else
+        {
+            Debug.LogWarning("turnTypeFromPlayerPref no está asignado. Las preferencias se guardaron pero no se aplicaron.");
+        }
     }
 }
